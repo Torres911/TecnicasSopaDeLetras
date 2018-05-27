@@ -5,6 +5,8 @@
 #include<stdlib.h>
 #include<cstdio.h>
 
+const int tamanoTablero = 10;
+
 using namespace std;
 
 enum Direccion{
