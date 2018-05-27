@@ -1,47 +1,6 @@
-#include <iostream>
-#include <cstdio>
-#include <stdlib.h>
-#include <cstring>
-#include <cctype>
-#include <fstream>
-
-
-using namespace std;
-
+#
 
 const int tamanoTablero = 10;
-
-//Enum containing all the different direction the words can face
-enum direccion{
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	UP_LEFT,
-	UP_RIGHT,
-	DOWN_LEFT,
-	DOWN_RIGHT
-};
-
-struct puntoInicial{int i,k;}; //Declare a point structure that represents a point on the grid
-
-class Generator{
-	char tablero[tamanoTablero][tamanoTablero]; //Create a nxn grid
-	char NULL_CHAR; //The character that represents a null value
-	string palabras[7];
-	public:
-	Generator();
-	char GenerateRandomChar(); //returns a random character
-	bool CanInsert(const char* word, puntoInicial start, direccion d); //Checks if the given word can be inserted at the start position facing direction d
-	void InsertWord(const char* word); //Place word at a random, valid location facing a random direction
-	void ClearGrid(); //Sets the grid to be all null values
-	void FillGrid(); //Fills null values with random characters
-	void PrintGrid(); //Prints the grid to stdout
-	puntoInicial ShiftPoint(puntoInicial start, direccion d); //Returns the shifted point
-	void ReadFile(char* filename);
-	void InsertWordsFromFile();
-	void PuzzleToFile(char* filename);
-};
 
 Generator::Generator(){
 	NULL_CHAR = 'x'; //Sets the null char to a lowercase x
@@ -184,7 +143,7 @@ void Generator::InsertWord(const char* word){
 		nuevoPunto = ShiftPoint(nuevoPunto,d);
 		i++;
 	}
-} 
+}
 
 void Generator::ReadFile(char* filename){
 	ifstream wordsFile(filename);
