@@ -5,7 +5,7 @@
 #include<stdlib.h>
 #include<cstdio.h>
 
-const int tamanoTablero = 10;
+const int tamanoTablero = 250;
 
 using namespace std;
 
