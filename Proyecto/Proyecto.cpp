@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
 	gen.llenarTablero();
 	gen.imprimirTablero();
 	try{
-		gen.PuzzleToFile(output_file);
+		gen.respuestaArchivo(output_file);
 	}
 	catch(const char* msg){
 		cout << msg << endl;

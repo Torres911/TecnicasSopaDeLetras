@@ -1,4 +1,5 @@
 #include"Clases.h"
+
 GeneradorSopa::GeneradorSopa(){
 	valorDefecto = 'x'; //Sets the null char to a lowercase x
 }
@@ -55,7 +56,7 @@ void GeneradorSopa::llenarTablero(){
 
 //Prints the grid to stdout
 void GeneradorSopa::imprimirTablero(){
-	printf("Generated Puzzle:\n");
+	printf("Generando Sopa de Letras:\n");
 	for(int i=0;i<tamanoTablero;i++){
 		for(int k=0;k<tamanoTablero;k++){
 			if(k == 0){
@@ -117,7 +118,7 @@ puntoInicial GeneradorSopa::puntoPivote(puntoInicial inicio, Direccion d){
 	//Handle out of bounds errors
 	if(nuevoPunto.i < -1 || nuevoPunto.i > tamanoTablero || nuevoPunto.k < -1 || nuevoPunto.k > tamanoTablero)
 	{
-		throw "Out of Bounds";
+		throw "Supera el limite marcado";
 	}
 	return nuevoPunto;
 }
@@ -129,38 +130,38 @@ void GeneradorSopa::insertarPalabra(const char* palabra){
 	do{
 		inicio.i = rand() % tamanoTablero; //set to a random row
 		inicio.k = rand() % tamanoTablero; //set to a random column
-		d = Direccion(rand() % 8); //get a random direction
+		d = Direccion(rand() % 250); //get a random direction
 	}
 	while(!puedeEntrar(palabra,inicio,d));
 	int i = 0;
 	puntoInicial nuevoPunto = inicio;
 	while(i < (int)strlen(palabra))
 	{
-		tablero[nuevoPunto.i][nuevoPunto.k] = (char)toarribaper(palabra[i]);
+		tablero[nuevoPunto.i][nuevoPunto.k] = (char)toupper(palabra[i]);
 		nuevoPunto = puntoPivote(nuevoPunto,d);
 		i++;
 	}
 }
 
-void GeneradorSopa::leerArchivo(char* filename){
-	ifstream palabrasArchivo(filename);
+void GeneradorSopa::leerArchivo(char* nombreArchivo){
+	ifstream palabrasArchivo(nombreArchivo);
 	string palabra;
 	int line = 0;
 	if(palabrasArchivo.is_open()){
-		printf("Reading file '%s'\n",filename);
+		printf("Leyendo el archivo de entrada '%s'\n",nombreArchivo);
 		while(getline(palabrasArchivo,palabra)){
 			palabras[line] = palabra;
 			line++;
-			if(line == 8){
-				throw "Words list can not have more than 7 words";
+			if(line == 250){
+				throw "No se permiten mas de 250 palabras de entrada para la Sopa de Letras";
 			}
 			if(palabra.length() < 2 || palabra.length() > tamanoTablero-1){
-				throw "Words must be at least two characters and no more than the grid size";
+				throw "No pueden haber palabras de menos de 2 caracteres, ni mayor a 250 caracteres (Maximo del Tablero)";
 			}
 		}
 	}
 	else{
-		throw "Cannot open words list file";
+		throw "No se pudo abrir el archivo";
 	}
 }
 
@@ -172,11 +173,11 @@ void GeneradorSopa::insertarPalabraDeArchivo(){
 	}
 }
 
-void GeneradorSopa::respuestaArchivo(char* filename){
-	ofstream output(filename);
+void GeneradorSopa::respuestaArchivo(char* nombreArchivo){
+	ofstream output(nombreArchivo);
 	char c;
 	if(output.is_open()){
-		printf("Writing to file '%s'\n",filename);
+		printf("Escribiendo en el archivo con la Sopa de Letras '%s'\n",nombreArchivo);
 		for(int i=0;i<tamanoTablero;i++){
 			for(int k=0;k<tamanoTablero;k++){
 				if(k == tamanoTablero-1){
@@ -191,6 +192,6 @@ void GeneradorSopa::respuestaArchivo(char* filename){
 		}}
 	}
 	else{
-		throw "Cannot create output file";
+		throw "No se pudo crear el archivo con la Sopa de Letras";
 	}
 }
