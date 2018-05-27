@@ -1,4 +1,6 @@
 #include"Clases.cpp"
+
+
 int main(int argc, char* argv[]){
 	/* initialize random seed: */
 	srand (time(NULL));
@@ -27,18 +29,18 @@ int main(int argc, char* argv[]){
 			printf("Usage: ./generator <words list> <output file>\n");
 			exit(1);
 	}
-	Generator gen;
+	GeneradorSopa gen;
 	try{
-		gen.ReadFile(words_list);
+		gen.leerArchivo(words_list);
 	}
 	catch(const char* msg){
 		cout << msg << endl;
 		exit(1);
 	}
-	gen.ClearGrid();
-	gen.InsertWordsFromFile();
-	gen.FillGrid();
-	gen.PrintGrid();
+	gen.limpiarTablero();
+	gen.insertarPalabraDeArchivo();
+	gen.llenarTablero();
+	gen.imprimirTablero();
 	try{
 		gen.PuzzleToFile(output_file);
 	}

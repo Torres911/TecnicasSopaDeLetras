@@ -1,31 +1,31 @@
 #include"Clases.h"
-Generator::Generator(){
-	NULL_CHAR = 'x'; //Sets the null char to a lowercase x
+GeneradorSopa::GeneradorSopa(){
+	valorDefecto = 'x'; //Sets the null char to a lowercase x
 }
 
-char Generator::GenerateRandomChar(){
+char GeneradorSopa::generarCharRandom(){
 	return 'A' + rand()%26; //leet way to generate a random character
 }
 
 //Sets all values in grid to a null character
-void Generator::ClearGrid(){
+void GeneradorSopa::limpiarTablero(){
 	for(int i=0;i<tamanoTablero;i++){
 		for(int k=0;k<tamanoTablero;k++){
-			tablero[i][k] = NULL_CHAR; //Every empty value will be a lowercase x
+			tablero[i][k] = valorDefecto; //Every empty value will be a lowercase x
 		}
 	}
 }
 
-//Checks if word can be inserted in the grid at the given start point
-bool Generator::CanInsert(const char* word, puntoInicial start, direccion d){
+//Checks if word can be inserted in the grid at the given inicio point
+bool GeneradorSopa::puedeEntrar(const char* palabra, puntoInicial inicio, Direccion d){
 	int i = 0;
-	puntoInicial nuevoPunto = start;
-	while(i < (int)strlen(word)) //Iterates through the word char array
+	puntoInicial nuevoPunto = inicio;
+	while(i < (int)strlen(palabra)) //Iterates through the word char array
 	{
 		//Attempt to shift the point
 		try{
-			if(tablero[nuevoPunto.i][nuevoPunto.k] == NULL_CHAR){
-				nuevoPunto = ShiftPoint(nuevoPunto,d);
+			if(tablero[nuevoPunto.i][nuevoPunto.k] == valorDefecto){
+				nuevoPunto = puntoPivote(nuevoPunto,d);
 				i++;
 			}
 			else{
@@ -43,18 +43,18 @@ bool Generator::CanInsert(const char* word, puntoInicial start, direccion d){
 }
 
 //Replaces empty tiles with a random character
-void Generator::FillGrid(){
+void GeneradorSopa::llenarTablero(){
 	for(int i=0;i<tamanoTablero;i++){
 		for(int k=0;k<tamanoTablero;k++){
-			if(tablero[i][k] == NULL_CHAR){
-				tablero[i][k] = GenerateRandomChar(); //Set every null value to a random character
+			if(tablero[i][k] == valorDefecto){
+				tablero[i][k] = generarCharRandom(); //Set every null value to a random character
 			}
 		}
 	}
 }
 
 //Prints the grid to stdout
-void Generator::PrintGrid(){
+void GeneradorSopa::imprimirTablero(){
 	printf("Generated Puzzle:\n");
 	for(int i=0;i<tamanoTablero;i++){
 		for(int k=0;k<tamanoTablero;k++){
@@ -72,42 +72,42 @@ void Generator::PrintGrid(){
 }
 
 //Shifts the point depending on the direction
-puntoInicial Generator::ShiftPoint(puntoInicial start, direccion d){
-	int i = start.i;
-	int k = start.k;
+puntoInicial GeneradorSopa::puntoPivote(puntoInicial inicio, Direccion d){
+	int i = inicio.i;
+	int k = inicio.k;
 	puntoInicial nuevoPunto;
 	switch(d){
-		case UP:
-			nuevoPunto.i = i-1; //Move up a row
+		case arriba:
+			nuevoPunto.i = i-1; //Move arriba a row
 			nuevoPunto.k = k;   //Column stays the same
 			break;
-		case DOWN:
-			nuevoPunto.i = i+1;  //Move down a row
+		case abajo:
+			nuevoPunto.i = i+1;  //Move abajo a row
 			nuevoPunto.k = k;    //Column stays the same
 			break;
-		case LEFT:
+		case izquierda:
 			nuevoPunto.i = i; //Row stays the same
-			nuevoPunto.k = k-1; //Column moves left
+			nuevoPunto.k = k-1; //Column moves izquierda
 			break;
-		case RIGHT:
+		case derecha:
 			nuevoPunto.i = i; //Row stays the same
-			nuevoPunto.k = k+1; //Column moves right
+			nuevoPunto.k = k+1; //Column moves derecha
 			break;
-		case UP_LEFT:
-			nuevoPunto.i = i-1; //Row moves up
-			nuevoPunto.k = k-1; //Column moves left
+		case arriba_izquierda:
+			nuevoPunto.i = i-1; //Row moves arriba
+			nuevoPunto.k = k-1; //Column moves izquierda
 			break;
-		case UP_RIGHT:
-			nuevoPunto.i = i-1; //Row moves up
-			nuevoPunto.k = k+1; //Column moves right
+		case arriba_derecha:
+			nuevoPunto.i = i-1; //Row moves arriba
+			nuevoPunto.k = k+1; //Column moves derecha
 			break;
-		case DOWN_LEFT:
-			nuevoPunto.i = i+1; //Row moves down
-			nuevoPunto.k = k-1; //Column moves to left
+		case abajo_izquierda:
+			nuevoPunto.i = i+1; //Row moves abajo
+			nuevoPunto.k = k-1; //Column moves to izquierda
 			break;
-		case DOWN_RIGHT:
-			nuevoPunto.i = i+1; //Row moves down
-			nuevoPunto.k = k+1; //Column moves right
+		case abajo_derecha:
+			nuevoPunto.i = i+1; //Row moves abajo
+			nuevoPunto.k = k+1; //Column moves derecha
 			break;
 		default:
 			nuevoPunto.i = i; //Row stays the same
@@ -123,38 +123,38 @@ puntoInicial Generator::ShiftPoint(puntoInicial start, direccion d){
 }
 
 
-void Generator::InsertWord(const char* word){
-	puntoInicial start;
-	direccion d;
+void GeneradorSopa::insertarPalabra(const char* palabra){
+	puntoInicial inicio;
+	Direccion d;
 	do{
-		start.i = rand() % tamanoTablero; //set to a random row
-		start.k = rand() % tamanoTablero; //set to a random column
-		d = direccion(rand() % 8); //get a random direction
+		inicio.i = rand() % tamanoTablero; //set to a random row
+		inicio.k = rand() % tamanoTablero; //set to a random column
+		d = Direccion(rand() % 8); //get a random direction
 	}
-	while(!CanInsert(word,start,d));
+	while(!puedeEntrar(palabra,inicio,d));
 	int i = 0;
-	puntoInicial nuevoPunto = start;
-	while(i < (int)strlen(word))
+	puntoInicial nuevoPunto = inicio;
+	while(i < (int)strlen(palabra))
 	{
-		tablero[nuevoPunto.i][nuevoPunto.k] = (char)toupper(word[i]);
-		nuevoPunto = ShiftPoint(nuevoPunto,d);
+		tablero[nuevoPunto.i][nuevoPunto.k] = (char)toarribaper(palabra[i]);
+		nuevoPunto = puntoPivote(nuevoPunto,d);
 		i++;
 	}
 }
 
-void Generator::ReadFile(char* filename){
-	ifstream wordsFile(filename);
-	string word;
+void GeneradorSopa::leerArchivo(char* filename){
+	ifstream palabrasArchivo(filename);
+	string palabra;
 	int line = 0;
-	if(wordsFile.is_open()){
+	if(palabrasArchivo.is_open()){
 		printf("Reading file '%s'\n",filename);
-		while(getline(wordsFile,word)){
-			palabras[line] = word;
+		while(getline(palabrasArchivo,palabra)){
+			palabras[line] = palabra;
 			line++;
 			if(line == 8){
 				throw "Words list can not have more than 7 words";
 			}
-			if(word.length() < 2 || word.length() > tamanoTablero-1){
+			if(palabra.length() < 2 || palabra.length() > tamanoTablero-1){
 				throw "Words must be at least two characters and no more than the grid size";
 			}
 		}
@@ -164,15 +164,15 @@ void Generator::ReadFile(char* filename){
 	}
 }
 
-void Generator::InsertWordsFromFile(){
+void GeneradorSopa::insertarPalabraDeArchivo(){
 	//Iterate through all of the indexes in the array and insert them into the grid
 	for(int i=0;i<(int)(sizeof(palabras)/sizeof(palabras[0]));i++){
-		string word = palabras[i];
-		InsertWord(word.c_str()); //Convert the word (std::string) into a useable char* array
+		string palabra = palabras[i];
+		insertarPalabra(palabra.c_str()); //Convert the word (std::string) into a useable char* array
 	}
 }
 
-void Generator::PuzzleToFile(char* filename){
+void GeneradorSopa::respuestaArchivo(char* filename){
 	ofstream output(filename);
 	char c;
 	if(output.is_open()){
