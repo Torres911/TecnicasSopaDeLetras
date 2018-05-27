@@ -189,7 +189,8 @@ void GeneradorSopa::respuestaArchivo(char* nombreArchivo){
 					c = tablero[i][k];
 					output.put(c);
 				}
-		}}
+			}
+		}
 	}
 	else{
 		throw "No se pudo crear el archivo con la Sopa de Letras";
