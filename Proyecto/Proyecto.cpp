@@ -1,5 +1,3 @@
-#
-
 const int tamanoTablero = 10;
 
 Generator::Generator(){
