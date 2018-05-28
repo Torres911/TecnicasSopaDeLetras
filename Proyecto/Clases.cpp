@@ -5,25 +5,25 @@ GeneradorSopa::GeneradorSopa(){
 }
 
 char GeneradorSopa::generarCharRandom(){
-	return 'A' + rand()%26; //leet way to generate a random character
+	return 'A' + rand()%26;
 }
 
-//Sets all values in grid to a null character
 void GeneradorSopa::limpiarTablero(){
+	FILE* output;
+	output = fopen("O.txt", "w");
 	for(int i=0;i<boardSize;i++){
 		for(int k=0;k<boardSize;k++){
-			tablero[i][k] = valorDefecto; //Every empty value will be a lowercase x
+			tablero[i][k] = valorDefecto;
 		}
 	}
 }
 
-//Checks if word can be inserted in the grid at the given inicio point
+//Condición
 bool GeneradorSopa::puedeEntrar(const char* palabra, PuntoInicial inicio, Direccion d){
 	int i = 0;
 	PuntoInicial nuevoPunto = inicio;
-	while(i < (int)strlen(palabra)) //Iterates through the word char array
+	while(i < (int)strlen(palabra))
 	{
-		//Attempt to shift the point
 		try{
 			if(tablero[nuevoPunto.i][nuevoPunto.k] == valorDefecto){
 				nuevoPunto = puntoPivote(nuevoPunto,d);
@@ -60,10 +60,10 @@ void GeneradorSopa::imprimirTablero(){
 	for(int i=0;i<boardSize;i++){
 		for(int k=0;k<boardSize;k++){
 			if(k == 0){
-				printf("\t%c ",tablero[i][k]); //Puts a tab at the first column to make it look pretty
+				printf("\t%c ",tablero[i][k]); //Puts a tab at the first Columna to make it look pretty
 			}
 			else if(k == boardSize-1){
-				printf("%c\n",tablero[i][k]); //Append a newline if it is on the last column
+				printf("%c\n",tablero[i][k]); //Append a newline if it is on the last Columna
 			}
 			else{
 				printf("%c ",tablero[i][k]);
@@ -79,40 +79,40 @@ PuntoInicial GeneradorSopa::puntoPivote(PuntoInicial inicio, Direccion d){
 	PuntoInicial nuevoPunto;
 	switch(d){
 		case arriba:
-			nuevoPunto.i = i-1; //Move arriba a row
-			nuevoPunto.k = k;   //Column stays the same
+			nuevoPunto.i = i-1; //Move arriba a Fila
+			nuevoPunto.k = k;   //Columna stays the same
 			break;
 		case abajo:
-			nuevoPunto.i = i+1;  //Move abajo a row
-			nuevoPunto.k = k;    //Column stays the same
+			nuevoPunto.i = i+1;  //Move abajo a Fila
+			nuevoPunto.k = k;    //Columna stays the same
 			break;
 		case izquierda:
-			nuevoPunto.i = i; //Row stays the same
-			nuevoPunto.k = k-1; //Column moves izquierda
+			nuevoPunto.i = i; //Fila stays the same
+			nuevoPunto.k = k-1; //Columna moves izquierda
 			break;
 		case derecha:
-			nuevoPunto.i = i; //Row stays the same
-			nuevoPunto.k = k+1; //Column moves derecha
+			nuevoPunto.i = i; //Fila stays the same
+			nuevoPunto.k = k+1; //Columna moves derecha
 			break;
 		case arriba_izquierda:
-			nuevoPunto.i = i-1; //Row moves arriba
-			nuevoPunto.k = k-1; //Column moves izquierda
+			nuevoPunto.i = i-1; //Fila moves arriba
+			nuevoPunto.k = k-1; //Columna moves izquierda
 			break;
 		case arriba_derecha:
-			nuevoPunto.i = i-1; //Row moves arriba
-			nuevoPunto.k = k+1; //Column moves derecha
+			nuevoPunto.i = i-1; //Fila moves arriba
+			nuevoPunto.k = k+1; //Columna moves derecha
 			break;
 		case abajo_izquierda:
-			nuevoPunto.i = i+1; //Row moves abajo
-			nuevoPunto.k = k-1; //Column moves to izquierda
+			nuevoPunto.i = i+1; //Fila moves abajo
+			nuevoPunto.k = k-1; //Columna moves to izquierda
 			break;
 		case abajo_derecha:
-			nuevoPunto.i = i+1; //Row moves abajo
-			nuevoPunto.k = k+1; //Column moves derecha
+			nuevoPunto.i = i+1; //Fila moves abajo
+			nuevoPunto.k = k+1; //Columna moves derecha
 			break;
 		default:
-			nuevoPunto.i = i; //Row stays the same
-			nuevoPunto.k = k; //Column stays the same
+			nuevoPunto.i = i; //Fila stays the same
+			nuevoPunto.k = k; //Columna stays the same
 			break;
 	}
 	//Handle out of bounds errors
@@ -128,8 +128,8 @@ void GeneradorSopa::insertarPalabra(const char* palabra){
 	PuntoInicial inicio;
 	Direccion d;
 	do{
-		inicio.i = rand() % boardSize; //set to a random row
-		inicio.k = rand() % boardSize; //set to a random column
+		inicio.i = rand() % boardSize; //set to a random Fila
+		inicio.k = rand() % boardSize; //set to a random Columna
 		d = Direccion(rand() % 250); //get a random direction
 	}
 	while(!puedeEntrar(palabra,inicio,d));
@@ -143,18 +143,20 @@ void GeneradorSopa::insertarPalabra(const char* palabra){
 	}
 }
 
-void GeneradorSopa::leerArchivo(string nombreArchivo){
-	ifstream palabrasArchivo(nombreArchivo);
-	string palabra;
+void GeneradorSopa::leerArchivo(){
+	FILE* palabrasArchivo;
+	palabrasArchivo = fopen("Flores.txt", "r");
+	char palabra[100];
 	int line = 0;
-	if(palabrasArchivo.is_open()){
-		while(getline(palabrasArchivo, palabra)){
+	if(palabrasArchivo != NULL){
+		while(line < 250){
+			fgets(palabra, 100, palabrasArchivo);
 			palabras[line] = palabra;
 			line++;
 			if(line == 250){
 				throw "No se permiten mas de 250 palabras de entrada para la Sopa de Letras";
 			}
-			if(palabra.length() < 2 || palabra.length() > boardSize-1){
+			if(sizeof(palabra) < 2 || sizeof(palabra) > boardSize-1){
 				throw "No pueden haber palabras de menos de 2 caracteres, ni mayor a 250 caracteres (Maximo del Tablero)";
 			}
 		}
@@ -166,26 +168,27 @@ void GeneradorSopa::leerArchivo(string nombreArchivo){
 
 void GeneradorSopa::insertarPalabraDeArchivo(){
 	//Iterate through all of the indexes in the array and insert them into the grid
-	for(int i=0;i<(int)(sizeof(palabras)/sizeof(palabras[0]));i++){
+	for(int i = 0; i < (int)(sizeof(palabras) / sizeof(palabras[0])); i++){
 		string palabra = palabras[i];
 		insertarPalabra(palabra.c_str()); //Convert the word (std::string) into a useable char* array
 	}
 }
 
-void GeneradorSopa::respuestaArchivo(string nombreArchivo){
-	ofstream output(nombreArchivo);
+void GeneradorSopa::respuestaArchivo(){
 	char c;
-	if(output.is_open()){
-		for(int i=0;i<boardSize;i++){
-			for(int k=0;k<boardSize;k++){
+	FILE* output;
+	output = fopen("O.txt", "w");
+	if(output != NULL){
+		for(int i = 0; i < boardSize; i++){
+			for(int k = 0;k < boardSize; k++){
 				if(k == boardSize-1){
 					c = tablero[i][k];
-					output.put(c);
-					output.put('\n');	//Append a newline if it is on the last column
+					fputc(c, output);
+					fputc('\n', output);	//Append a newline if it is on the last Columna
 				}
 				else{
 					c = tablero[i][k];
-					output.put(c);
+					fputc(c, output);
 				}
 			}
 		}
