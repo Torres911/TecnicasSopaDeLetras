@@ -8,7 +8,6 @@ void GeneradorSopa::leerArchivo(){
 	string palabra;
 	int i = 0;
 	while(getline(cin, palabra) && i < 15){
-		cout << palabra << endl;
 		if(palabra.size() < 9){
 			palabras.push_back(palabra);
 		}
@@ -16,10 +15,6 @@ void GeneradorSopa::leerArchivo(){
 			cout << palabra << " tiene 9 o mas caracteres" << endl;
 		}
 		i++;
-	}
-	vector<string>::iterator it;
-	for(it = palabras.begin(); it != palabras.end(); it++){
-		cout << *it << endl;
 	}
 }
 
@@ -46,7 +41,7 @@ bool GeneradorSopa::puedeEntrar(string palabra, PuntoInicial inicio, Direccion d
 			}
 			else{
 				cout << palabra << " no cabe" << endl;
-				continue;
+				break;
 			}
 	}
 }
@@ -131,7 +126,7 @@ PuntoInicial GeneradorSopa::puntoPivote(PuntoInicial inicio, Direccion d){
 }
 
 
-void GeneradorSopa::insertarPalabra(string palabra){
+void GeneradorSopa::insertarPalabra(char* palabra){
 	PuntoInicial inicio;
 	Direccion d;
 	do{
@@ -154,7 +149,8 @@ void GeneradorSopa::insertarPalabraDeArchivo(){
 	vector<string>::iterator it;
 	for(it = palabras.begin(); it != palabras.end(); it++){
 		string palabra_ref = *it;
-		const char* char_ref = palabra_ref.c_str();
+		char * char_ref = new char[palabra_ref.length()+1];
+		strcpy(char_ref, palabra_ref.c_str());
 		insertarPalabra(char_ref);
 	}
 }

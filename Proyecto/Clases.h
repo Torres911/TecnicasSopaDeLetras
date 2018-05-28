@@ -44,7 +44,7 @@ class GeneradorSopa{
 		GeneradorSopa();
 		char generarCharRandom(); //returns a random character
 		bool puedeEntrar(string palabra, PuntoInicial inicio, Direccion d); //Checks if the given word can be inserted at the start position facing direction d
-		void insertarPalabra(string palabra); //Place word at a random, valid location facing a random direction
+		void insertarPalabra(char* palabra); //Place word at a random, valid location facing a random direction
 		void limpiarTablero(); //Sets the grid to be all null values
 		void llenarTablero(); //Fills null values with random characters
 		void imprimirTablero(); //Prints the grid to stdout
