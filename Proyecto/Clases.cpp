@@ -148,7 +148,6 @@ void GeneradorSopa::leerArchivo(string nombreArchivo){
 	string palabra;
 	int line = 0;
 	if(palabrasArchivo.is_open()){
-		printf("Leyendo el archivo de entrada '%s'\n",nombreArchivo);
 		while(getline(palabrasArchivo, palabra)){
 			palabras[line] = palabra;
 			line++;
@@ -177,7 +176,6 @@ void GeneradorSopa::respuestaArchivo(string nombreArchivo){
 	ofstream output(nombreArchivo);
 	char c;
 	if(output.is_open()){
-		printf("Escribiendo en el archivo con la Sopa de Letras '%s'\n",nombreArchivo);
 		for(int i=0;i<boardSize;i++){
 			for(int k=0;k<boardSize;k++){
 				if(k == boardSize-1){
