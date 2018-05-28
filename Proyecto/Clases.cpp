@@ -10,17 +10,17 @@ char GeneradorSopa::generarCharRandom(){
 
 //Sets all values in grid to a null character
 void GeneradorSopa::limpiarTablero(){
-	for(int i=0;i<tamanoTablero;i++){
-		for(int k=0;k<tamanoTablero;k++){
+	for(int i=0;i<boardSize;i++){
+		for(int k=0;k<boardSize;k++){
 			tablero[i][k] = valorDefecto; //Every empty value will be a lowercase x
 		}
 	}
 }
 
 //Checks if word can be inserted in the grid at the given inicio point
-bool GeneradorSopa::puedeEntrar(const char* palabra, puntoInicial inicio, Direccion d){
+bool GeneradorSopa::puedeEntrar(const char* palabra, PuntoInicial inicio, Direccion d){
 	int i = 0;
-	puntoInicial nuevoPunto = inicio;
+	PuntoInicial nuevoPunto = inicio;
 	while(i < (int)strlen(palabra)) //Iterates through the word char array
 	{
 		//Attempt to shift the point
@@ -45,8 +45,8 @@ bool GeneradorSopa::puedeEntrar(const char* palabra, puntoInicial inicio, Direcc
 
 //Replaces empty tiles with a random character
 void GeneradorSopa::llenarTablero(){
-	for(int i=0;i<tamanoTablero;i++){
-		for(int k=0;k<tamanoTablero;k++){
+	for(int i=0;i<boardSize;i++){
+		for(int k=0;k<boardSize;k++){
 			if(tablero[i][k] == valorDefecto){
 				tablero[i][k] = generarCharRandom(); //Set every null value to a random character
 			}
@@ -57,12 +57,12 @@ void GeneradorSopa::llenarTablero(){
 //Prints the grid to stdout
 void GeneradorSopa::imprimirTablero(){
 	printf("Generando Sopa de Letras:\n");
-	for(int i=0;i<tamanoTablero;i++){
-		for(int k=0;k<tamanoTablero;k++){
+	for(int i=0;i<boardSize;i++){
+		for(int k=0;k<boardSize;k++){
 			if(k == 0){
 				printf("\t%c ",tablero[i][k]); //Puts a tab at the first column to make it look pretty
 			}
-			else if(k == tamanoTablero-1){
+			else if(k == boardSize-1){
 				printf("%c\n",tablero[i][k]); //Append a newline if it is on the last column
 			}
 			else{
@@ -73,10 +73,10 @@ void GeneradorSopa::imprimirTablero(){
 }
 
 //Shifts the point depending on the direction
-puntoInicial GeneradorSopa::puntoPivote(puntoInicial inicio, Direccion d){
+PuntoInicial GeneradorSopa::puntoPivote(PuntoInicial inicio, Direccion d){
 	int i = inicio.i;
 	int k = inicio.k;
-	puntoInicial nuevoPunto;
+	PuntoInicial nuevoPunto;
 	switch(d){
 		case arriba:
 			nuevoPunto.i = i-1; //Move arriba a row
@@ -116,7 +116,7 @@ puntoInicial GeneradorSopa::puntoPivote(puntoInicial inicio, Direccion d){
 			break;
 	}
 	//Handle out of bounds errors
-	if(nuevoPunto.i < -1 || nuevoPunto.i > tamanoTablero || nuevoPunto.k < -1 || nuevoPunto.k > tamanoTablero)
+	if(nuevoPunto.i < -1 || nuevoPunto.i > boardSize || nuevoPunto.k < -1 || nuevoPunto.k > boardSize)
 	{
 		throw "Supera el limite marcado";
 	}
@@ -125,16 +125,16 @@ puntoInicial GeneradorSopa::puntoPivote(puntoInicial inicio, Direccion d){
 
 
 void GeneradorSopa::insertarPalabra(const char* palabra){
-	puntoInicial inicio;
+	PuntoInicial inicio;
 	Direccion d;
 	do{
-		inicio.i = rand() % tamanoTablero; //set to a random row
-		inicio.k = rand() % tamanoTablero; //set to a random column
+		inicio.i = rand() % boardSize; //set to a random row
+		inicio.k = rand() % boardSize; //set to a random column
 		d = Direccion(rand() % 250); //get a random direction
 	}
 	while(!puedeEntrar(palabra,inicio,d));
 	int i = 0;
-	puntoInicial nuevoPunto = inicio;
+	PuntoInicial nuevoPunto = inicio;
 	while(i < (int)strlen(palabra))
 	{
 		tablero[nuevoPunto.i][nuevoPunto.k] = (char)toupper(palabra[i]);
@@ -143,19 +143,19 @@ void GeneradorSopa::insertarPalabra(const char* palabra){
 	}
 }
 
-void GeneradorSopa::leerArchivo(char* nombreArchivo){
+void GeneradorSopa::leerArchivo(string nombreArchivo){
 	ifstream palabrasArchivo(nombreArchivo);
 	string palabra;
 	int line = 0;
 	if(palabrasArchivo.is_open()){
 		printf("Leyendo el archivo de entrada '%s'\n",nombreArchivo);
-		while(getline(palabrasArchivo,palabra)){
+		while(getline(palabrasArchivo, palabra)){
 			palabras[line] = palabra;
 			line++;
 			if(line == 250){
 				throw "No se permiten mas de 250 palabras de entrada para la Sopa de Letras";
 			}
-			if(palabra.length() < 2 || palabra.length() > tamanoTablero-1){
+			if(palabra.length() < 2 || palabra.length() > boardSize-1){
 				throw "No pueden haber palabras de menos de 2 caracteres, ni mayor a 250 caracteres (Maximo del Tablero)";
 			}
 		}
@@ -173,14 +173,14 @@ void GeneradorSopa::insertarPalabraDeArchivo(){
 	}
 }
 
-void GeneradorSopa::respuestaArchivo(char* nombreArchivo){
+void GeneradorSopa::respuestaArchivo(string nombreArchivo){
 	ofstream output(nombreArchivo);
 	char c;
 	if(output.is_open()){
 		printf("Escribiendo en el archivo con la Sopa de Letras '%s'\n",nombreArchivo);
-		for(int i=0;i<tamanoTablero;i++){
-			for(int k=0;k<tamanoTablero;k++){
-				if(k == tamanoTablero-1){
+		for(int i=0;i<boardSize;i++){
+			for(int k=0;k<boardSize;k++){
+				if(k == boardSize-1){
 					c = tablero[i][k];
 					output.put(c);
 					output.put('\n');	//Append a newline if it is on the last column

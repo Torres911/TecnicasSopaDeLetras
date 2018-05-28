@@ -4,8 +4,8 @@
 int main(int argc, char* argv[]){
 	/* initialize random seed: */
 	srand (time(NULL));
-	char* words_list;
-	char* output_file;
+	string words_list;
+	string output_file;
 	switch(argc){
 		case 1:
 			words_list = "words_list";

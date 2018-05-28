@@ -3,14 +3,18 @@
 #include<algorithm>
 #include<cstring>
 #include<stdlib.h>
-#include<cstdio.h>
+#include<fstream>
+#include<ctime>
 
-const int tamanoTablero = 250;
+#ifndef CLASES_H
+#define CLASES_H
+
+const int boardSize = 250;
 
 using namespace std;
 
 enum Direccion{
-	
+
 	arriba,
 	abajo,
 	izquierda,
@@ -30,11 +34,11 @@ struct PuntoInicial{
 };
 
 class GeneradorSopa{
-	
-	char tablero[tamanoTablero][tamanoTablero]; //Create a nxn grid
+
+	char tablero[boardSize][boardSize]; //Create a nxn grid
 	char valorDefecto; //The character that represents a null value
 	string palabras[7];
-	
+
 	public:
 		GeneradorSopa();
 		char generarCharRandom(); //returns a random character
@@ -44,7 +48,8 @@ class GeneradorSopa{
 		void llenarTablero(); //Fills null values with random characters
 		void imprimirTablero(); //Prints the grid to stdout
 		PuntoInicial puntoPivote(PuntoInicial inicio, Direccion d); //Returns the shifted point
-		void leerArchivo(char* filename);
+		void leerArchivo(string nombreArchivo);
 		void insertarPalabraDeArchivo();
-		void respuestaArchivo(char* filename);
+		void respuestaArchivo(string nombreArchivo);
 };
+#endif
