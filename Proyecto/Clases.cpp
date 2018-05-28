@@ -37,12 +37,11 @@ bool GeneradorSopa::puedeEntrar(string palabra, PuntoInicial inicio, Direccion d
 	while(i < sizeof(palabra)){
 			if(tablero[nuevoPunto.i][nuevoPunto.k] == valorDefecto){
 				nuevoPunto = puntoPivote(nuevoPunto,d);
-				i++;
 			}
 			else{
 				cout << palabra << " no cabe" << endl;
-				break;
 			}
+			i++;
 	}
 }
 
