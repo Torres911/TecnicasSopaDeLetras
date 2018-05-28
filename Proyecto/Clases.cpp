@@ -9,11 +9,11 @@ void GeneradorSopa::leerArchivo(){
 	int i = 0;
 	while(getline(cin, palabra) && i < 15){
 		cout << palabra << endl;
-		if(palabra.size() < 7){
+		if(palabra.size() < 9){
 			palabras.push_back(palabra);
 		}
 		else{
-			cout << palabra << " tiene 7 o mas caracteres" << endl;
+			cout << palabra << " tiene 9 o mas caracteres" << endl;
 		}
 		i++;
 	}
@@ -36,16 +36,17 @@ void GeneradorSopa::limpiarTablero(){
 }
 
 //Condición
-bool GeneradorSopa::puedeEntrar(const char* palabra, PuntoInicial inicio, Direccion d){
+bool GeneradorSopa::puedeEntrar(string palabra, PuntoInicial inicio, Direccion d){
 	int i = 0;
 	PuntoInicial nuevoPunto = inicio;
-	while(i < (int)strlen(palabra)){
+	while(i < sizeof(palabra)){
 			if(tablero[nuevoPunto.i][nuevoPunto.k] == valorDefecto){
 				nuevoPunto = puntoPivote(nuevoPunto,d);
 				i++;
 			}
 			else{
 				cout << palabra << " no cabe" << endl;
+				continue;
 			}
 	}
 }
@@ -130,7 +131,7 @@ PuntoInicial GeneradorSopa::puntoPivote(PuntoInicial inicio, Direccion d){
 }
 
 
-void GeneradorSopa::insertarPalabra(const char* palabra){
+void GeneradorSopa::insertarPalabra(string palabra){
 	PuntoInicial inicio;
 	Direccion d;
 	do{
@@ -141,7 +142,7 @@ void GeneradorSopa::insertarPalabra(const char* palabra){
 	while(!puedeEntrar(palabra,inicio,d));
 	int i = 0;
 	PuntoInicial nuevoPunto = inicio;
-	while(i < (int)strlen(palabra))
+	while(i < sizeof(palabra))
 	{
 		tablero[nuevoPunto.i][nuevoPunto.k] = (char)toupper(palabra[i]);
 		nuevoPunto = puntoPivote(nuevoPunto,d);
@@ -150,9 +151,11 @@ void GeneradorSopa::insertarPalabra(const char* palabra){
 }
 
 void GeneradorSopa::insertarPalabraDeArchivo(){
-	for(int i = 0; i < (int)(sizeof(palabras)); i++){
-		string palabra_ref = palabras[i];
-		insertarPalabra(palabra_ref.c_str()); //Convert the word (std::string) into a useable char* array
+	vector<string>::iterator it;
+	for(it = palabras.begin(); it != palabras.end(); it++){
+		string palabra_ref = *it;
+		const char* char_ref = palabra_ref.c_str();
+		insertarPalabra(char_ref);
 	}
 }
 
