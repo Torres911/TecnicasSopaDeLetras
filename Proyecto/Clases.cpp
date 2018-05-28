@@ -1,7 +1,26 @@
 #include"Clases.h"
 
 GeneradorSopa::GeneradorSopa(){
-	valorDefecto = 'x'; //Sets the null char to a lowercase x
+	valorDefecto = 'x';
+}
+
+void GeneradorSopa::leerArchivo(){
+	string palabra;
+	int i = 0;
+	while(getline(cin, palabra) && i < 15){
+		cout << palabra << endl;
+		if(palabra.size() < 7){
+			palabras.push_back(palabra);
+		}
+		else{
+			cout << palabra << " tiene 7 o mas caracteres" << endl;
+		}
+		i++;
+	}
+	vector<string>::iterator it;
+	for(it = palabras.begin(); it != palabras.end(); it++){
+		cout << *it << endl;
+	}
 }
 
 char GeneradorSopa::generarCharRandom(){
@@ -9,10 +28,8 @@ char GeneradorSopa::generarCharRandom(){
 }
 
 void GeneradorSopa::limpiarTablero(){
-	FILE* output;
-	output = fopen("O.txt", "w");
-	for(int i=0;i<boardSize;i++){
-		for(int k=0;k<boardSize;k++){
+	for(int i = 0; i < boardSize; i++){
+		for(int k = 0; k < boardSize; k++){
 			tablero[i][k] = valorDefecto;
 		}
 	}
@@ -22,28 +39,17 @@ void GeneradorSopa::limpiarTablero(){
 bool GeneradorSopa::puedeEntrar(const char* palabra, PuntoInicial inicio, Direccion d){
 	int i = 0;
 	PuntoInicial nuevoPunto = inicio;
-	while(i < (int)strlen(palabra))
-	{
-		try{
+	while(i < (int)strlen(palabra)){
 			if(tablero[nuevoPunto.i][nuevoPunto.k] == valorDefecto){
 				nuevoPunto = puntoPivote(nuevoPunto,d);
 				i++;
 			}
 			else{
-				return false;
+				cout << palabra << " no cabe" << endl;
 			}
-		}
-		catch(const char* msg) //Returns false if the out of bounds error occurs
-		{
-			/*cout << "Cannot insert one of the words.  Please try again or choose a new word." << endl;
-			exit(1);*/
-			return false;
-		}
 	}
-	return true;
 }
 
-//Replaces empty tiles with a random character
 void GeneradorSopa::llenarTablero(){
 	for(int i=0;i<boardSize;i++){
 		for(int k=0;k<boardSize;k++){
@@ -128,9 +134,9 @@ void GeneradorSopa::insertarPalabra(const char* palabra){
 	PuntoInicial inicio;
 	Direccion d;
 	do{
-		inicio.i = rand() % boardSize; //set to a random Fila
-		inicio.k = rand() % boardSize; //set to a random Columna
-		d = Direccion(rand() % 250); //get a random direction
+		inicio.i = rand() % boardSize;
+		inicio.k = rand() % boardSize;
+		d = Direccion(rand() % 250);
 	}
 	while(!puedeEntrar(palabra,inicio,d));
 	int i = 0;
@@ -143,57 +149,10 @@ void GeneradorSopa::insertarPalabra(const char* palabra){
 	}
 }
 
-void GeneradorSopa::leerArchivo(){
-	FILE* palabrasArchivo;
-	palabrasArchivo = fopen("Flores.txt", "r");
-	char palabra[100];
-	int line = 0;
-	if(palabrasArchivo != NULL){
-		while(line < 250){
-			fgets(palabra, 100, palabrasArchivo);
-			palabras[line] = palabra;
-			line++;
-			if(line == 250){
-				throw "No se permiten mas de 250 palabras de entrada para la Sopa de Letras";
-			}
-			if(sizeof(palabra) < 2 || sizeof(palabra) > boardSize-1){
-				throw "No pueden haber palabras de menos de 2 caracteres, ni mayor a 250 caracteres (Maximo del Tablero)";
-			}
-		}
-	}
-	else{
-		throw "No se pudo abrir el archivo";
-	}
-}
-
 void GeneradorSopa::insertarPalabraDeArchivo(){
-	//Iterate through all of the indexes in the array and insert them into the grid
-	for(int i = 0; i < (int)(sizeof(palabras) / sizeof(palabras[0])); i++){
-		string palabra = palabras[i];
-		insertarPalabra(palabra.c_str()); //Convert the word (std::string) into a useable char* array
+	for(int i = 0; i < (int)(sizeof(palabras)); i++){
+		string palabra_ref = palabras[i];
+		insertarPalabra(palabra_ref.c_str()); //Convert the word (std::string) into a useable char* array
 	}
 }
 
-void GeneradorSopa::respuestaArchivo(){
-	char c;
-	FILE* output;
-	output = fopen("O.txt", "w");
-	if(output != NULL){
-		for(int i = 0; i < boardSize; i++){
-			for(int k = 0;k < boardSize; k++){
-				if(k == boardSize-1){
-					c = tablero[i][k];
-					fputc(c, output);
-					fputc('\n', output);	//Append a newline if it is on the last Columna
-				}
-				else{
-					c = tablero[i][k];
-					fputc(c, output);
-				}
-			}
-		}
-	}
-	else{
-		throw "No se pudo crear el archivo con la Sopa de Letras";
-	}
-}
